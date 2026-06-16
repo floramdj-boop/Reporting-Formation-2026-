@@ -1,0 +1,310 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Arial Black',Arial,sans-serif;background:#f5f5f5;color:#1a1a1a}
+.dash{padding:1.5rem;max-width:1200px;margin:0 auto}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px;background:#fff;padding:1rem 1.5rem;border-bottom:4px solid #E2001A}
+.logo{display:flex;align-items:center;gap:8px}
+.logo-text{font-size:22px;font-weight:900;color:#E2001A;letter-spacing:-1px}
+.logo-sub{font-size:11px;color:#666;font-weight:400;font-family:Arial,sans-serif;margin-top:2px}
+.topbar-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select{font-size:12px;padding:6px 12px;border:1.5px solid #ddd;background:#fff;color:#1a1a1a;font-family:Arial,sans-serif;cursor:pointer}
+.btn{font-size:12px;padding:8px 16px;border:none;cursor:pointer;font-family:Arial,sans-serif;font-weight:700;letter-spacing:.03em}
+.btn-outline{background:#fff;border:2px solid #1a1a1a;color:#1a1a1a}
+.btn-red{background:#E2001A;color:#fff}
+.btn-red:hover{background:#c0001a}
+
+.kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:1.5rem}
+.kpi{background:#fff;padding:1.25rem;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#E2001A}
+.kpi-label{font-size:11px;color:#666;margin-bottom:8px;font-family:Arial,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.05em}
+.kpi-value{font-size:28px;font-weight:900;color:#1a1a1a;line-height:1}
+.kpi-value.red{color:#E2001A}
+.kpi-sub{font-size:11px;color:#999;margin-top:6px;font-family:Arial,sans-serif}
+.kpi-deco{position:absolute;bottom:-8px;right:-8px;width:40px;height:40px;background:#E2001A;opacity:.08}
+
+.section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#666;margin-bottom:10px;font-family:Arial,sans-serif}
+
+.charts-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:1.5rem}
+.card{background:#fff;padding:1.25rem;position:relative}
+.card-title{font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:1rem;text-transform:uppercase;letter-spacing:.06em;font-family:Arial,sans-serif}
+.card-deco{position:absolute;top:0;right:0;width:20px;height:20px;background:#E2001A}
+
+.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;font-size:11px;color:#666;font-family:Arial,sans-serif}
+.legend span{display:flex;align-items:center;gap:4px}
+.legend i{width:10px;height:10px;display:inline-block}
+
+.table-card{background:#fff;padding:1.25rem;margin-bottom:1.5rem;position:relative}
+.table-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+table{width:100%;border-collapse:collapse;font-size:11px;font-family:Arial,sans-serif;table-layout:fixed}
+th{text-align:left;font-weight:700;color:#1a1a1a;padding:8px;border-bottom:2px solid #E2001A;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+td{padding:8px;border-bottom:1px solid #f0f0f0;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+tr:hover td{background:#fff5f5}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;font-weight:700;font-family:Arial,sans-serif;text-transform:uppercase;letter-spacing:.03em}
+.b-green{background:#e8f5e8;color:#2e7d32}
+.b-amber{background:#fff3e0;color:#e65100}
+.b-gray{background:#f5f5f5;color:#666}
+.b-red{background:#ffebee;color:#c62828}
+
+.ai-bar{display:flex;align-items:center;gap:10px;background:#1a1a1a;padding:14px 20px}
+.ai-label{font-size:12px;color:#fff;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;font-family:Arial,sans-serif}
+.ai-bar input{flex:1;font-size:13px;border:none;padding:8px 12px;background:#333;color:#fff;font-family:Arial,sans-serif}
+.ai-bar input::placeholder{color:#888}
+
+.red-square{display:inline-block;width:10px;height:10px;background:#E2001A;margin-right:6px;flex-shrink:0}
+</style>
+
+<div class="dash">
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-text">Se<span style="color:#1a1a1a">Loger</span></div>
+      <div style="width:6px;height:6px;background:#E2001A;margin-left:2px;margin-bottom:14px"></div>
+      <div style="margin-left:12px;border-left:1px solid #ddd;padding-left:12px">
+        <div style="font-size:14px;font-weight:900;color:#1a1a1a">Formation Dashboard</div>
+        <div class="logo-sub">Aviv Group — Suivi formations internes</div>
+      </div>
+    </div>
+    <div class="topbar-controls">
+      <select id="selPeriod" onchange="filterData()">
+        <option value="all">Q1 2026 — Tout</option>
+        <option value="jan">Janvier</option>
+        <option value="feb">Février</option>
+        <option value="mar">Mars</option>
+        <option value="apr">Avril</option>
+      </select>
+      <select id="selFormateur" onchange="filterData()">
+        <option value="all">Tous les formateurs</option>
+        <option value="nico">Nico</option>
+        <option value="pierre">Pierre</option>
+        <option value="both">Nico & Pierre</option>
+      </select>
+      <button class="btn btn-outline" onclick="filterData()">Actualiser</button>
+      <button class="btn btn-red" onclick="sendPrompt('Analyse mon reporting de formation Q1 2026 : points forts, axes d amélioration et recommandations prioritaires')">Analyser avec IA →</button>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-deco"></div>
+      <div class="kpi-label">Formations délivrées</div>
+      <div class="kpi-value red" id="kpi-nb">16</div>
+      <div class="kpi-sub">Q1 2026</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-deco"></div>
+      <div class="kpi-label">Taux de participation</div>
+      <div class="kpi-value" id="kpi-part">78%</div>
+      <div class="kpi-sub">Moyenne toutes formations</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-deco"></div>
+      <div class="kpi-label">NPS moyen</div>
+      <div class="kpi-value red" id="kpi-nps">9,5 / 10</div>
+      <div class="kpi-sub" id="kpi-nps-sub">Basé sur 4 formations</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-deco"></div>
+      <div class="kpi-label">Heures de formation</div>
+      <div class="kpi-value" id="kpi-h">73,1 h</div>
+      <div class="kpi-sub">Total Q1 2026</div>
+    </div>
+  </div>
+
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-deco"></div>
+      <div class="card-title">Participation par formation</div>
+      <div class="legend">
+        <span><i style="background:#E2001A"></i>Bon (≥75%)</span>
+        <span><i style="background:#ffb300"></i>Faible (&lt;75%)</span>
+      </div>
+      <div style="position:relative;height:180px"><canvas id="c1" role="img" aria-label="Taux de participation par formation"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-deco"></div>
+      <div class="card-title">NPS par formation (/10)</div>
+      <div class="legend"><span><i style="background:#1a1a1a"></i>Score NPS</span></div>
+      <div style="position:relative;height:180px"><canvas id="c2" role="img" aria-label="NPS par formation"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-deco"></div>
+      <div class="card-title">Répartition des heures</div>
+      <div class="legend" id="donut-legend"></div>
+      <div style="position:relative;height:160px"><canvas id="c3" role="img" aria-label="Répartition heures Q1 2026"></canvas></div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:4px;height:20px;background:#E2001A"></div>
+        <span style="font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:.06em">Détail des formations</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span style="font-size:11px;color:#999;font-family:Arial,sans-serif">Trier par :</span>
+        <select style="font-size:11px;padding:4px 8px;border:1px solid #ddd" onchange="sortTable(this.value)">
+          <option value="date">Date</option>
+          <option value="part">Participation</option>
+          <option value="nps">NPS</option>
+          <option value="h">Heures</option>
+        </select>
+      </div>
+    </div>
+    <div style="overflow-x:auto">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th style="width:90px">Date</th>
+            <th style="width:190px">Thématique</th>
+            <th style="width:100px">Formateur</th>
+            <th style="width:55px;text-align:right">Inscrits</th>
+            <th style="width:55px;text-align:right">Présents</th>
+            <th style="width:75px;text-align:right">Particip.</th>
+            <th style="width:55px;text-align:right">NPS</th>
+            <th style="width:60px;text-align:right">Heures</th>
+            <th style="width:140px">Statut</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ai-bar">
+    <div style="width:8px;height:8px;background:#E2001A;flex-shrink:0"></div>
+    <span class="ai-label">Question IA</span>
+    <input type="text" id="aiQ" placeholder="Ex : Quelle formation a le meilleur NPS ? Quels axes d'amélioration prioritaires ?" onkeydown="if(event.key==='Enter')askAI()"/>
+    <button class="btn btn-red" onclick="askAI()">Envoyer →</button>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+var allData=[
+  {date:'13/10-29/10',theme:'Price Increase IDF',formateur:'Nico/Pierre',inscrits:19,presents:16,part:84,nps:9.5,heures:21,mois:'jan',statut:'done'},
+  {date:'22/01-05/02',theme:'Push ROF CQ',formateur:'Nico & Pierre',inscrits:35,presents:35,part:100,nps:9.4,heures:17.15,mois:'feb',statut:'done'},
+  {date:'04/02',theme:'Migration Ultimo ACQ Karim',formateur:'Nico',inscrits:10,presents:8,part:80,nps:9.5,heures:1.5,mois:'feb',statut:'done'},
+  {date:'06/02',theme:'SF Cuca AE Laurent',formateur:'Nico & Pierre',inscrits:9,presents:9,part:100,nps:null,heures:1,mois:'feb',statut:'done'},
+  {date:'09/02',theme:'SF Cuca AE Armelle',formateur:'Nico',inscrits:7,presents:6,part:86,nps:null,heures:0.5,mois:'feb',statut:'done'},
+  {date:'10/02',theme:'SF Cuca AE Sarah',formateur:'Nico',inscrits:7,presents:5,part:71,nps:null,heures:0.5,mois:'feb',statut:'warn'},
+  {date:'10/02',theme:'SF Cuca AE Thomas',formateur:'Pierre',inscrits:7,presents:5,part:71,nps:null,heures:0.5,mois:'feb',statut:'warn'},
+  {date:'11/02',theme:'SF Cuca AE Imade',formateur:'Pierre',inscrits:7,presents:2,part:29,nps:null,heures:0.5,mois:'feb',statut:'low'},
+  {date:'12/02',theme:'SF Cuca AE Nadji',formateur:'Pierre',inscrits:7,presents:6,part:86,nps:null,heures:0.5,mois:'feb',statut:'done'},
+  {date:'13/02',theme:'SF Cuca AE Christopher',formateur:'Pierre',inscrits:6,presents:0,part:0,nps:null,heures:0.5,mois:'feb',statut:'low'},
+  {date:'16/02',theme:'SF Cuca AE Olivier',formateur:'Nico',inscrits:7,presents:7,part:100,nps:null,heures:0.5,mois:'feb',statut:'done'},
+  {date:'12/02',theme:'Migration Ultimo AE testeurs',formateur:'Nico',inscrits:6,presents:6,part:100,nps:null,heures:null,mois:'feb',statut:'done'},
+  {date:'09/03',theme:'Inté Gianni',formateur:'Nico/Pierre',inscrits:1,presents:1,part:100,nps:10,heures:35,mois:'mar',statut:'done'},
+  {date:'10/03',theme:'Migration Ultimo GC',formateur:'Nico',inscrits:10,presents:10,part:100,nps:null,heures:1,mois:'mar',statut:'done'},
+  {date:'13/03',theme:'Migration Ultimo tous les AE',formateur:'Nico',inscrits:60,presents:47,part:78,nps:null,heures:2,mois:'mar',statut:'done'},
+  {date:'01/04',theme:'Grands comptes mobilité',formateur:'Nico',inscrits:4,presents:null,part:null,nps:null,heures:14,mois:'apr',statut:'ongoing'},
+];
+var filtered=allData.slice();
+
+function badge(s){
+  if(s==='done')return '<span class="badge b-green">Terminée</span>';
+  if(s==='warn')return '<span class="badge b-amber">Faible particip.</span>';
+  if(s==='low')return '<span class="badge b-red">Très faible</span>';
+  if(s==='ongoing')return '<span class="badge b-gray">En cours</span>';
+  return '';
+}
+
+function renderTable(data){
+  var tb=document.getElementById('tableBody');
+  tb.innerHTML=data.map(function(r){
+    var pTxt=r.part!==null?r.part+'%':'—';
+    var nTxt=r.nps!==null?r.nps.toFixed(1):'—';
+    var hTxt=r.heures!==null?r.heures+'h':'—';
+    var prTxt=r.presents!==null?r.presents:'—';
+    var pColor=r.part!==null&&r.part<50?'color:#c62828':(r.part!==null&&r.part<75?'color:#e65100':'color:#2e7d32');
+    var nColor=r.nps!==null?'color:#E2001A;font-weight:700':'';
+    return '<tr><td>'+r.date+'</td><td title="'+r.theme+'">'+r.theme+'</td><td>'+r.formateur+'</td><td style="text-align:right">'+r.inscrits+'</td><td style="text-align:right">'+prTxt+'</td><td style="text-align:right;'+pColor+'">'+pTxt+'</td><td style="text-align:right;'+nColor+'">'+nTxt+'</td><td style="text-align:right">'+hTxt+'</td><td>'+badge(r.statut)+'</td></tr>';
+  }).join('');
+}
+
+function updateKPIs(data){
+  document.getElementById('kpi-nb').textContent=data.length;
+  var parts=data.filter(function(r){return r.part!==null;});
+  var avgP=parts.length?Math.round(parts.reduce(function(a,r){return a+r.part;},0)/parts.length):0;
+  document.getElementById('kpi-part').textContent=avgP+'%';
+  var nL=data.filter(function(r){return r.nps!==null;});
+  var avgN=nL.length?(nL.reduce(function(a,r){return a+r.nps;},0)/nL.length).toFixed(1):'—';
+  document.getElementById('kpi-nps').textContent=avgN+' / 10';
+  document.getElementById('kpi-nps-sub').textContent='Basé sur '+nL.length+' formations';
+  var tH=data.filter(function(r){return r.heures!==null;}).reduce(function(a,r){return a+r.heures;},0);
+  document.getElementById('kpi-h').textContent=tH.toFixed(1)+' h';
+}
+
+function filterData(){
+  var p=document.getElementById('selPeriod').value;
+  var f=document.getElementById('selFormateur').value;
+  filtered=allData.filter(function(r){
+    var okP=p==='all'||r.mois===p;
+    var okF=f==='all'||(f==='nico'&&r.formateur.toLowerCase()==='nico')||(f==='pierre'&&r.formateur.toLowerCase()==='pierre')||(f==='both'&&r.formateur.toLowerCase().includes('&'));
+    return okP&&okF;
+  });
+  renderTable(filtered);
+  updateKPIs(filtered);
+  updateCharts(filtered);
+}
+
+function sortTable(by){
+  var d=filtered.slice();
+  if(by==='part')d.sort(function(a,b){return(b.part||0)-(a.part||0);});
+  else if(by==='nps')d.sort(function(a,b){return(b.nps||0)-(a.nps||0);});
+  else if(by==='h')d.sort(function(a,b){return(b.heures||0)-(a.heures||0);});
+  renderTable(d);
+}
+
+function askAI(){
+  var q=document.getElementById('aiQ').value.trim();
+  if(q)sendPrompt(q);
+}
+
+var c1,c2,c3;
+function updateCharts(data){
+  var pData=data.filter(function(r){return r.part!==null;}).slice(0,7);
+  var pLabels=pData.map(function(r){return r.theme.length>13?r.theme.substring(0,13)+'…':r.theme;});
+  var pVals=pData.map(function(r){return r.part;});
+  var pColors=pVals.map(function(v){return v>=75?'#E2001A':'#ffb300';});
+  if(c1)c1.destroy();
+  c1=new Chart(document.getElementById('c1'),{
+    type:'bar',
+    data:{labels:pLabels,datasets:[{label:'%',data:pVals,backgroundColor:pColors,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{max:100,ticks:{callback:function(v){return v+'%'},font:{size:9}},grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:9},maxRotation:40,autoSkip:false},grid:{display:false}}}}
+  });
+
+  var nData=data.filter(function(r){return r.nps!==null;});
+  var nLabels=nData.map(function(r){return r.theme.length>11?r.theme.substring(0,11)+'…':r.theme;});
+  var nVals=nData.map(function(r){return r.nps;});
+  if(c2)c2.destroy();
+  c2=new Chart(document.getElementById('c2'),{
+    type:'bar',
+    data:{labels:nLabels,datasets:[{label:'NPS',data:nVals,backgroundColor:'#1a1a1a',borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{min:8,max:10,ticks:{font:{size:9}},grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:9},maxRotation:40,autoSkip:false},grid:{display:false}}}}
+  });
+
+  var hData=data.filter(function(r){return r.heures!==null;});
+  var top3=hData.slice().sort(function(a,b){return b.heures-a.heures;}).slice(0,3);
+  var autresH=hData.slice(3).reduce(function(a,r){return a+r.heures;},0);
+  var dLabels=top3.map(function(r){return r.theme.length>15?r.theme.substring(0,15)+'…':r.theme;});
+  var dVals=top3.map(function(r){return r.heures;});
+  if(autresH>0){dLabels.push('Autres');dVals.push(parseFloat(autresH.toFixed(1)));}
+  var dColors=['#E2001A','#1a1a1a','#888','#ccc'];
+  if(c3)c3.destroy();
+  c3=new Chart(document.getElementById('c3'),{
+    type:'doughnut',
+    data:{labels:dLabels,datasets:[{data:dVals,backgroundColor:dColors.slice(0,dVals.length),borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'58%'}
+  });
+  var leg=document.getElementById('donut-legend');
+  leg.innerHTML=dLabels.map(function(l,i){
+    return '<span><i style="background:'+dColors[i]+'"></i>'+l+' ('+dVals[i]+'h)</span>';
+  }).join('');
+}
+
+renderTable(allData);
+updateKPIs(allData);
+setTimeout(function(){updateCharts(allData);},100);
+</script>
